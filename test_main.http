@@ -2,8 +2,34 @@ GET http://127.0.0.1:8000/
 Accept: application/json
 
 ###
-
 GET http://127.0.0.1:8000/posts
 Accept: application/json
+
+###
+GET http://127.0.0.1:8000/posts/2
+Accept: application/json
+
+###
+POST http://127.0.0.1:8000/posts
+Content-Type: application/json
+
+{
+  "title": "Top places in Missouri",
+  "content": "Check out these awesome places.",
+  "rating": 4
+}
+
+###
+PUT http://127.0.0.1:8000/posts/1
+Content-Type: application/json
+
+{
+  "title": "Updated title.",
+  "content": "This should now be changed."
+}
+
+###
+DELETE http://127.0.0.1:8000/posts/2
+Content-Type: application/json
 
 ###
