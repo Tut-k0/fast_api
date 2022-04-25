@@ -15,8 +15,7 @@ Content-Type: application/json
 
 {
   "title": "Top places in Missouri",
-  "content": "Check out these awesome places.",
-  "rating": 4
+  "content": "Check out these awesome places."
 }
 
 ###
