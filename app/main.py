@@ -31,10 +31,11 @@ def get_posts(db: Session = Depends(get_db)):
     posts = db.query(models.Post).all()
     # cursor.execute("""SELECT * FROM posts ORDER BY id;""")
     # posts = cursor.fetchall()
-    return {"data": posts}
+    return posts
 
 
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
+@app.post("/posts", status_code=status.HTTP_201_CREATED,
+          response_model=schemas.Post)
 def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
     new_post = models.Post(**post.dict())
     db.add(new_post)
@@ -46,7 +47,7 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
     #                (post.title, post.content, post.published,))
     # new_post = cursor.fetchone()
     # conn.commit()
-    return {"data": new_post}
+    return new_post
 
 
 @app.get("/posts/{id}")
@@ -57,7 +58,7 @@ def get_post(id: int, db: Session = Depends(get_db)):
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Post with id {id} was not found.")
-    return {"post_detail": post}
+    return post
 
 
 @app.put("/posts/{id}")
@@ -78,7 +79,7 @@ def update_post(id: int, post: schemas.PostCreate,
                             detail=f"Post with id {id} was not found.")
     post_query.update(post.dict(), synchronize_session=False)
     db.commit()
-    return {"data": post_query.first()}
+    return post_query.first()
 
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
