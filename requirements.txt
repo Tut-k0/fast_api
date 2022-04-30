@@ -1,2 +1,7 @@
-fastapi
+fastapi[all]
 pydantic
+psycopg2
+SQLAlchemy
+email-validator
+passlib
+bcrypt
