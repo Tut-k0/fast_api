@@ -1,3 +1,5 @@
+from typing import List
+
 import psycopg2
 from fastapi import FastAPI, status, HTTPException, Response, Depends
 from psycopg2.extras import RealDictCursor
@@ -5,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from . import models, schemas
 from .database import engine, get_db
+from .utils import hash_password
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -26,7 +29,7 @@ def root():
     return {"message": "Hello World"}
 
 
-@app.get("/posts")
+@app.get("/posts", response_model=List[schemas.Post])
 def get_posts(db: Session = Depends(get_db)):
     posts = db.query(models.Post).all()
     # cursor.execute("""SELECT * FROM posts ORDER BY id;""")
@@ -50,7 +53,7 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db)):
     return new_post
 
 
-@app.get("/posts/{id}")
+@app.get("/posts/{id}", response_model=schemas.Post)
 def get_post(id: int, db: Session = Depends(get_db)):
     post = db.query(models.Post).filter(models.Post.id == id).first()
     # cursor.execute("""SELECT * FROM posts WHERE id = %s;""", (str(id),))
@@ -61,7 +64,7 @@ def get_post(id: int, db: Session = Depends(get_db)):
     return post
 
 
-@app.put("/posts/{id}")
+@app.put("/posts/{id}", response_model=schemas.Post)
 def update_post(id: int, post: schemas.PostCreate,
                 db: Session = Depends(get_db)):
     # cursor.execute("""UPDATE posts SET title = %s,
@@ -95,3 +98,16 @@ def delete_post(id: int, db: Session = Depends(get_db)):
     post.delete(synchronize_session=False)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.post("/users", status_code=status.HTTP_201_CREATED,
+          response_model=schemas.UserOut)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+
+    user.password = hash_password(user.password)
+
+    new_user = models.User(**user.dict())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
