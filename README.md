@@ -22,7 +22,8 @@ After doing so you will need to change the database connection string
 SQLALCHEMY_DATABASE_URL in database.py to reflect the correct database info.
 ### Start API
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
+# If psycopg2 fails to install use psycopg2-binary instead.
 python -m uvicorn app.main:app
 ```
 Go to http://127.0.0.1:8000/docs once running for documentation.
