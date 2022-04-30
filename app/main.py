@@ -1,8 +1,6 @@
 from typing import List
 
-import psycopg2
 from fastapi import FastAPI, status, HTTPException, Response, Depends
-from psycopg2.extras import RealDictCursor
 from sqlalchemy.orm import Session
 
 from . import models, schemas
@@ -12,16 +10,6 @@ from .utils import hash_password
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
-try:
-    conn = psycopg2.connect(host='localhost', database='fastapi',
-                            user='postgres', password='password123',
-                            cursor_factory=RealDictCursor)
-    cursor = conn.cursor()
-    print('DB connection successful.')
-except Exception as error:
-    print('Connecting to DB failed.')
-    print(f'Error was {error}')
 
 
 @app.get("/")
