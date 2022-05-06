@@ -16,11 +16,11 @@ def login(credentials: OAuth2PasswordRequestForm = Depends(),
         models.User.email == credentials.username).first()
 
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail="Invalid credentials.")
 
     if not verify_password(credentials.password, user.password):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail="Invalid credentials.")
 
     # Create and Return Token
