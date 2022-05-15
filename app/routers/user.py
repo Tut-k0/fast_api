@@ -11,7 +11,7 @@ router = APIRouter(prefix='/users', tags=['Users'])
 @router.post("/", status_code=status.HTTP_201_CREATED,
              response_model=schemas.UserOut)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db),
-                current_user: int = Depends(oauth2.get_current_user)):
+                current_user: models.User = Depends(oauth2.get_current_user)):
     user.password = hash_password(user.password)
 
     new_user = models.User(**user.dict())
@@ -23,7 +23,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db),
 
 @router.get('/{id}', response_model=schemas.UserOut)
 def get_user(id: int, db: Session = Depends(get_db),
-             current_user: int = Depends(oauth2.get_current_user)):
+             current_user: models.User = Depends(oauth2.get_current_user)):
     user = db.query(models.User).filter(models.User.id == id).first()
 
     if not user:
