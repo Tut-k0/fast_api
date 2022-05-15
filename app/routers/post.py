@@ -67,6 +67,6 @@ def delete_post(id: int, db: Session = Depends(get_db),
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail="You do not have permissions to delete "
                                    "others posts!")
-    delete_post.delete(synchronize_session=False)
+    post_query.delete(synchronize_session=False)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
