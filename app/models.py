@@ -29,6 +29,7 @@ class User(Base):
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), server_default=text('NOW()'),
                         nullable=False)
+    phone_number = Column(String)
 
 
 class Vote(Base):
