@@ -14,13 +14,16 @@ router = APIRouter(prefix='/posts', tags=['Posts'])
 def get_posts(db: Session = Depends(get_db),
               current_user: models.User = Depends(oauth2.get_current_user),
               limit: int = 10, skip: int = 0, search: Optional[str] = ""):
-    posts_votes = (db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
-                   .join(models.Vote, models.Vote.post_id == models.Post.id, isouter=True)
-                   .group_by(models.Post.id)
-                   .filter(models.Post.title.contains(search))
-                   .limit(limit)
-                   .offset(skip)
-                   .all())
+    posts_votes = (
+        db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
+        .join(models.Vote, models.Vote.post_id == models.Post.id,
+              isouter=True)
+        .group_by(models.Post.id)
+        .filter(models.Post.title.contains(search))
+        .limit(limit)
+        .offset(skip)
+        .all()
+    )
 
     return posts_votes
 
@@ -39,11 +42,14 @@ def create_post(post: schemas.PostCreate, db: Session = Depends(get_db),
 @router.get("/{id}", response_model=schemas.PostOut)
 def get_post(id: int, db: Session = Depends(get_db),
              current_user: models.User = Depends(oauth2.get_current_user)):
-    post = (db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
-            .join(models.Vote, models.Vote.post_id == models.Post.id, isouter=True)
-            .group_by(models.Post.id)
-            .filter(models.Post.id == id)
-            .first())
+    post = (
+        db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
+        .join(models.Vote, models.Vote.post_id == models.Post.id,
+              isouter=True)
+        .group_by(models.Post.id)
+        .filter(models.Post.id == id)
+        .first()
+    )
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Post with id {id} was not found.")
@@ -54,7 +60,10 @@ def get_post(id: int, db: Session = Depends(get_db),
 def update_post(id: int, post: schemas.PostCreate,
                 db: Session = Depends(get_db),
                 current_user: models.User = Depends(oauth2.get_current_user)):
-    post_query = db.query(models.Post).filter(models.Post.id == id)
+    post_query = (
+        db.query(models.Post)
+        .filter(models.Post.id == id)
+    )
     update_post = post_query.first()
     if update_post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -71,7 +80,11 @@ def update_post(id: int, post: schemas.PostCreate,
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int, db: Session = Depends(get_db),
                 current_user: models.User = Depends(oauth2.get_current_user)):
-    post_query = db.query(models.Post).filter(models.Post.id == id)
+    post_query = (
+        db.query(models.Post)
+        .filter(models.Post.id == id)
+    )
+
     delete_post = post_query.first()
     if delete_post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

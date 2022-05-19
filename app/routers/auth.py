@@ -12,8 +12,11 @@ router = APIRouter(tags=['Authentication'])
 @router.post('/login', response_model=schemas.Token)
 def login(credentials: OAuth2PasswordRequestForm = Depends(),
           db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(
-        models.User.email == credentials.username).first()
+    user = (
+        db.query(models.User)
+        .filter(models.User.email == credentials.username)
+        .first()
+    )
 
     if not user:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
