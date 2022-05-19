@@ -38,6 +38,11 @@ class Post(PostBase):
         orm_mode = True
 
 
+class PostOut(BaseModel):
+    Post: Post
+    votes: int
+
+
 class Vote(BaseModel):
     post_id: int
     voted: bool
