@@ -38,6 +38,16 @@ class Post(PostBase):
         orm_mode = True
 
 
+class PostOut(BaseModel):
+    Post: Post
+    votes: int
+
+
+class Vote(BaseModel):
+    post_id: int
+    voted: bool
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str
