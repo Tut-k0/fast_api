@@ -18,6 +18,17 @@ ALTER USER postgres WITH PASSWORD 'SecurePassHere';
 CREATE DATABASE fastapi;
 exit
 ```
+### Clone The Repo
+```bash
+git clone https://github.com/Tut-k0/fast_api.git
+cd fast_api
+pip install -r requirements.txt
+# If psycopg2 fails to install use psycopg2-binary instead.
+```
+We now need to seed the database tables and columns from the migrations.
+```bash
+python -m alembic upgrade head
+```
 ### Start API
 After setting up the database, you will need to create a .env file in the project root directory with all the environment
 variables set correctly. Here is an example:
@@ -34,8 +45,13 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 Now we are ready to start the API. Make sure you have all the requirements, 
 and you should be good to go.
 ```bash
-pip install -r requirements.txt
-# If psycopg2 fails to install use psycopg2-binary instead.
 python -m uvicorn app.main:app
 ```
 Go to http://127.0.0.1:8000/docs once running for built-in documentation.
+Currently, there aren't any seeded users, so one will need to be manually created. 
+This can be done through the DB but is better off done through the API.
+Edit user.py under routers and comment out this parameter on the create_user function
+```python 
+current_user: models.User = Depends(oauth2.get_current_user
+```
+So you can use that endpoint unauthenticated. Once you create a user you can add that parameter back.
