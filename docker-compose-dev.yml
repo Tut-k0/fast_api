@@ -1,0 +1,27 @@
+---
+version: "3"
+services:
+  api:
+    image: tutk0/fast_api:0.9
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/usr/src/app:ro
+    env_file:
+      - .env
+    entrypoint: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=fastapi
+      - POSTGRES_PASSWORD=PleaseMakeMeSecure123
+
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  postgres-db:

@@ -1,5 +1,5 @@
-# WIP
-
+# Fast API Implementation
+A full-fledged API implementation with Python utilizing FastAPI. 
 ## Install/Run Instructions
 These instructions are based on running off a Debian based distro.
 ### Install/Start Database
@@ -46,5 +46,14 @@ Now we are ready to start the API. Make sure you have all the requirements,
 and you should be good to go.
 ```bash
 python -m uvicorn app.main:app
+```
+Go to http://127.0.0.1:8000/docs once running for built-in documentation.
+
+## Docker Setup
+This setup still requires setting up the above .env file. 
+Also change the postgres environment variables to be correct in the compose file.
+```bash
+docker-compose -f docker-compose-dev.yml up -d
+docker exec fast_api_api_1 "alembic" "upgrade" "head"
 ```
 Go to http://127.0.0.1:8000/docs once running for built-in documentation.
