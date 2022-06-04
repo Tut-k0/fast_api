@@ -1,0 +1,33 @@
+---
+version: "3"
+services:
+  api:
+    image: tutk0/fast_api:0.9
+    depends_on:
+      - postgres
+    ports:
+      - "80:8000"
+    volumes:
+      - ./:/usr/src/app:ro
+    environment:
+      - DB_HOSTNAME=${DB_HOSTNAME}
+      - DB_PORT=${DB_PORT}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=${DB_HOSTNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  postgres-db:
